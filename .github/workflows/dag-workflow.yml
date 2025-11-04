@@ -38,4 +38,6 @@ jobs:
           pip install -r requirements.txt
       
       - name: Pytest
-        run : "pytest tests/test_hello_world_dag.py"
+        run : |
+          source venv/bin/activate
+          pytest tests/test_hello_world_dag.py
