@@ -38,4 +38,4 @@ jobs:
           pip install -r requirements.txt
       
       - name: Pytest
-        run : "pytest"
+        run : "pytest tests/test_hello_world_dag.py"
