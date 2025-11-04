@@ -16,7 +16,7 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
-  build:
+  install_dependencies:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
@@ -41,3 +41,25 @@ jobs:
         run : |
           source venv/bin/activate
           pytest tests/test_hello_world_dag.py
+
+  DAG_build_and_test:
+    runs-on: ubuntu-latest
+    name: Build and Upload DAG to GCP
+
+    needs: install_dependencies
+
+    steps:
+      - name: Authenticate to GCP
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: 'projects/1048351869749/locations/global/workloadIdentityPools/github-actions/subject/SUBJECT_ATTRIBUTE_VALUE'
+          service_account: 'github-action@famous-gecko-476708-q1.iam.gserviceaccount.com'
+      
+      - name: Setup gcloud
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Verify identity
+        run: |
+          gcloud auth list
+          gcloud sts tokens exchange --help >/dev/null 2>&1 || true
+
