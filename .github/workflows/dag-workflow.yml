@@ -52,6 +52,9 @@ jobs:
     needs: install_dependencies
 
     steps:
+
+      - uses: actions/checkout@v4
+
       - name: Authenticate to GCP
         uses: google-github-actions/auth@v2
         with:
