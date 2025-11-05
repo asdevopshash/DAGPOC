@@ -74,5 +74,5 @@ jobs:
           gcloud sts tokens exchange --help >/dev/null 2>&1 || true
 
       - name: Deploy DAGs
-        run: gsutil -m cp -r dags/ gs:// us-central1-datapoc-ff10a15e-bucket/dags/
+        run: gsutil -m cp -r dags/ gs://us-central1-datapoc-ff10a15e-bucket
 
