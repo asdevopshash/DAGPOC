@@ -6,10 +6,7 @@ name: CI
 on:
   # Triggers the workflow on push or pull request events but only for the "main" branch
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
-
+    branches: ["main"]
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
@@ -28,8 +25,8 @@ jobs:
       # Runs a single command using the runners shell
       - uses: actions/setup-python@v6
         with:
-          python-version: '3.13'
-          cache: 'pip'
+          python-version: "3.13"
+          cache: "pip"
       - name: Install dependencies
         run: |
           python3 -m venv venv
@@ -38,33 +35,32 @@ jobs:
           pip install -r requirements.txt
 
       - name: Compile DAG
-        run : |
-            python -m compileall dags/
-  
+        run: |
+          python -m compileall dags/
+
       - name: Pytest
-        run : |
+        run: |
           source venv/bin/activate
           pytest tests/test_hello_world_dag.py
 
   DAG_build_and_test:
     runs-on: ubuntu-latest
     permissions:
-      id-token: write    # needed for OIDC
-      contents: read  
+      id-token: write # needed for OIDC
+      contents: read
     name: Build and Upload DAG to GCP
 
     needs: install_dependencies
 
     steps:
-
       - uses: actions/checkout@v4
 
       - name: Authenticate to GCP
         uses: google-github-actions/auth@v2
         with:
-          workload_identity_provider: 'projects/1048351869749/locations/global/workloadIdentityPools/github-poolv1/providers/github-actions-v1'
-          service_account: 'github-action@famous-gecko-476708-q1.iam.gserviceaccount.com'
-      
+          workload_identity_provider: "projects/1048351869749/locations/global/workloadIdentityPools/github-poolv1/providers/github-actions-v1"
+          service_account: "github-action@famous-gecko-476708-q1.iam.gserviceaccount.com"
+
       - name: Setup gcloud
         uses: google-github-actions/setup-gcloud@v2
 
@@ -75,4 +71,3 @@ jobs:
 
       - name: Deploy DAGs
         run: gsutil -m cp -r dags/ gs://us-central1-datapoc-ff10a15e-bucket
-
