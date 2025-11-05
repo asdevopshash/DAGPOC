@@ -37,7 +37,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Pytest
+      - name: Compile DAG
         run : |
             python -m compileall dags/
   
@@ -72,4 +72,7 @@ jobs:
         run: |
           gcloud auth list
           gcloud sts tokens exchange --help >/dev/null 2>&1 || true
+          
+      - name: Deploy DAGs
+        run: gsutil -m cp -r dags/ gs://[YOUR_COMPOSER_BUCKET_ID]/dags/
 
