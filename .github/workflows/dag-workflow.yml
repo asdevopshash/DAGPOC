@@ -44,6 +44,9 @@ jobs:
 
   DAG_build_and_test:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write    # needed for OIDC
+      contents: read  
     name: Build and Upload DAG to GCP
 
     needs: install_dependencies
