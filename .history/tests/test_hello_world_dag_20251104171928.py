@@ -6,7 +6,7 @@ from airflow.utils.dag_cycle_tester import check_cycle
 from datetime import timedelta
 
 # Import the DAG object from your definition file
-from dags.etl.bronze.hw.helloworld_dag import dag as hello_world_dag
+from dags.etl.helloworld_dag import dag as hello_world_dag
 
 def test_dag_integrity():
     """Test that the DAG loads without cycles and has the correct metadata."""
