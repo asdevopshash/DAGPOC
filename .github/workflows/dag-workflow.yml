@@ -15,7 +15,7 @@ jobs:
   # This workflow contains a single job called "build"
   install_dependencies:
     # The type of runner that the job will run on
-    runs-on: ubuntu-latest
+    runs-on: poc-runner
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -44,7 +44,7 @@ jobs:
           pytest tests/test_hello_world_dag.py
 
   DAG_build_and_test:
-    runs-on: ubuntu-latest
+    runs-on: poc-runner
     permissions:
       id-token: write # needed for OIDC
       contents: read
@@ -71,3 +71,30 @@ jobs:
 
       - name: Deploy DAGs
         run: gsutil -m cp -r dags/ gs://us-central1-datapoc-ff10a15e-bucket
+
+  build_and_deploy_sql_code:
+    runs-on: poc-runner
+    permissions:
+      id-token: write # needed for OIDC
+      contents: read
+
+    name: Build and Deploy SQL code
+
+    needs: DAG_build_and_test
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Authenticate to GCP
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: "projects/1048351869749/locations/global/workloadIdentityPools/github-poolv1/providers/github-actions-v1"
+          service_account: "github-action@famous-gecko-476708-q1.iam.gserviceaccount.com"
+
+      - name: Setup gcloud
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Verify identity
+        run: |
+          gcloud auth list
+          gcloud sts tokens exchange --help >/dev/null 2>&1 || true
