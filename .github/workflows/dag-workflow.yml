@@ -15,7 +15,7 @@ jobs:
   # This workflow contains a single job called "build"
   install_dependencies:
     # The type of runner that the job will run on
-    runs-on: poc-runner
+    runs-on: self-hosted
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -44,7 +44,7 @@ jobs:
           pytest tests/test_hello_world_dag.py
 
   DAG_build_and_test:
-    runs-on: poc-runner
+    runs-on: self-hosted
     permissions:
       id-token: write # needed for OIDC
       contents: read
@@ -73,7 +73,7 @@ jobs:
         run: gsutil -m cp -r dags/ gs://us-central1-datapoc-ff10a15e-bucket
 
   build_and_deploy_sql_code:
-    runs-on: poc-runner
+    runs-on: self-hosted
     permissions:
       id-token: write # needed for OIDC
       contents: read
