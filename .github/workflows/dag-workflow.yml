@@ -94,9 +94,8 @@ jobs:
       - name: Setup gcloud
         uses: google-github-actions/setup-gcloud@v2
 
-      - name: Download Cloud SQL Proxy
+      - name: Execution Permission to Cloud SQL Proxy
         run: |
-          wget https://storage.googleapis.com/cloud-sql-proxy/v2.10.0/cloud-sql-proxy.linux.amd64 -O cloud-sql-proxy-binary
           chmod +x cloud-sql-proxy-binary
       
       - name: Setup Flyway CLI
