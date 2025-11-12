@@ -96,9 +96,25 @@ jobs:
 
       - name: Download Cloud SQL Proxy
         run: |
-          wget https://dl.google.com/cloudsql/cloud_sql_proxy.linux.amd64 -O cloud_sql_proxy
-          chmod +x cloud_sql_proxy
+          wget https://storage.googleapis.com/cloud-sql-proxy/v2.10.0/cloud-sql-proxy.linux.amd64 -O cloud-sql-proxy-binary
+          chmod +x cloud-sql-proxy-binary
       
+      - name: Setup Flyway CLI
+        uses: red-gate/setup-flyway@v1
+        with:
+          version: 'latest' # Or '10.15.0'
       - name: Wait for Cloud SQL Proxy to Start
         run: |
-          ./wait-for-it.sh famous-gecko-476708-q1:us-central1:datasqlpoc:5432 -s -t 10 -- echo "Cloud SQL Proxy is running"
+          ./cloud-sql-proxy-binary $DB_HOST --port 5432
+          sleep 5
+
+          flyway -url="jdbc:postgresql://127.0.0.1:5432/[DB_NAME]" \
+             -user="[$DB_USER]" \
+             -password="[$DB_PASSWORD]" \
+             -locations=filesystem:migrations \
+             migrate
+          
+        env:
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_USER : ${{ secrets.DB_USER }}
+          DB_PASSWORD : ${{ secrets.DB_PASSWORD }}
