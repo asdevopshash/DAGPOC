@@ -94,7 +94,11 @@ jobs:
       - name: Setup gcloud
         uses: google-github-actions/setup-gcloud@v2
 
-      - name: Verify identity
+      - name: Download Cloud SQL Proxy
         run: |
-          gcloud auth list
-          gcloud sts tokens exchange --help >/dev/null 2>&1 || true
+          wget https://dl.google.com/cloudsql/cloud_sql_proxy.linux.amd64 -O cloud_sql_proxy
+          chmod +x cloud_sql_proxy
+      
+      - name: Wait for Cloud SQL Proxy to Start
+        run: |
+          ./wait-for-it.sh famous-gecko-476708-q1:us-central1:datasqlpoc:5432 -s -t 10 -- echo "Cloud SQL Proxy is running"
